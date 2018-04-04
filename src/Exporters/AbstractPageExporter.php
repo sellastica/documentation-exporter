@@ -51,6 +51,9 @@ abstract class AbstractPageExporter
 	 */
 	protected function getAttributeName(\Nette\Reflection\Method $method): string
 	{
-		return \Nette\Utils\Strings::lower(\Nette\Utils\Strings::after($method->getName(), 'get'));
+		return preg_match('~^get.*$~', $method->getName())
+			? \Nette\Utils\Strings::lower(\Nette\Utils\Strings::after($method->getName(), 'get'))
+			: $method->getName();
+
 	}
 }
