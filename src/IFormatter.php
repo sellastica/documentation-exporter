@@ -1,11 +1,11 @@
 <?php
 namespace Sellastica\DocumentationExporter;
 
-interface IPreprocessor
+interface IFormatter
 {
 	/**
 	 * @param string $string
 	 * @return string
 	 */
-	function process(string $string): string; 
+	function format(string $string): string;
 }

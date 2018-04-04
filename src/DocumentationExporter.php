@@ -5,8 +5,8 @@ class DocumentationExporter
 {
 	/** @var array */
 	private $classNames = [];
-	/** @var \Sellastica\DocumentationExporter\IPreprocessor */
-	private $preprocessors = [];
+	/** @var \Sellastica\DocumentationExporter\IPageExporter[] */
+	private $pageExporters = [];
 	/** @var \Sellastica\DocumentationExporter\ISaver */
 	private $saver;
 
@@ -19,6 +19,16 @@ class DocumentationExporter
 	public function addClass(string $className, string $identifier): DocumentationExporter
 	{
 		$this->classNames[$className] = $identifier;
+		return $this;
+	}
+
+	/**
+	 * @param \Sellastica\DocumentationExporter\IPageExporter $pageExporter
+	 * @return DocumentationExporter
+	 */
+	public function addPageExporter(\Sellastica\DocumentationExporter\IPageExporter $pageExporter): DocumentationExporter
+	{
+		$this->pageExporters[] = $pageExporter;
 		return $this;
 	}
 
@@ -39,44 +49,12 @@ class DocumentationExporter
 		}
 
 		foreach ($this->classNames as $className => $identifier) {
-			$reflection = new \Sellastica\Reflection\ReflectionClass($className);
-			foreach ($reflection->getMethods(-1, false) as $method) {
-				if ($method->hasAnnotation('export-documentation')) {
-					$this->saver->save(
-						$this->getAnnotation($method),
-						$identifier
-					);
-				}
+			$page = '';
+			foreach ($this->pageExporters as $exporter) {
+				$page .= PHP_EOL . $exporter->export($className);
 			}
+
+			$this->saver->save($page, $identifier);
 		}
-	}
-
-	/**
-	 * @param \Sellastica\DocumentationExporter\IPreprocessor $preprocessor
-	 * @return $this
-	 */
-	public function addPreprocessor(\Sellastica\DocumentationExporter\IPreprocessor $preprocessor)
-	{
-		$this->preprocessors[get_class($preprocessor)] = $preprocessor;
-		return $this;
-	}
-
-	/**
-	 * @param \Nette\Reflection\Method $method
-	 * @return null|string
-	 */
-	private function getAnnotation(\Nette\Reflection\Method $method): ?string
-	{
-		$phpdoc = new \Barryvdh\Reflection\DocBlock($method);
-		$description = $phpdoc->getText();
-		if (empty($description)) {
-			return null;
-		}
-
-		foreach ($this->preprocessors as $preprocessor) {
-			$description = $preprocessor->process($description);
-		}
-
-		return $description ?: null;
 	}
 }

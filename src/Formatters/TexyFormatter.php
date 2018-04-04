@@ -1,9 +1,9 @@
 <?php
-namespace Sellastica\DocumentationExporter\Preprocessors;
+namespace Sellastica\DocumentationExporter\Formatters;
 
-use Sellastica\DocumentationExporter\IPreprocessor;
+use Sellastica\DocumentationExporter\IFormatter;
 
-class TexyPreprocessor implements IPreprocessor
+class TexyFormatter implements IFormatter
 {
 	/** @var \Texy\Texy */
 	private $texy;
@@ -13,13 +13,14 @@ class TexyPreprocessor implements IPreprocessor
 	{
 		$this->texy = new \Texy\Texy();
 		$this->texy->tabWidth = 4;
+		$this->texy->headingModule->top = 2;
 	}
 
 	/**
 	 * @param string $string
 	 * @return string
 	 */
-	function process(string $string): string
+	function format(string $string): string
 	{
 		return $this->texy->process($string);
 	}
