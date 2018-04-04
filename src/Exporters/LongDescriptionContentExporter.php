@@ -15,12 +15,12 @@ class LongDescriptionContentExporter extends AbstractPageExporter implements \Se
 		foreach ($reflection->getMethods(-1, false) as $method) {
 			$annotationReflection = $this->getAnnotationReflection($method);
 			if (!$method->hasAnnotation('export-documentation')
-				|| !$annotationReflection->getLongDescription()) {
+				|| !$annotationReflection->getLongDescription()->getContents()) {
 				continue;
 			}
 
 			//heading
-			$annotations[] = '<h2>' . $this->getAttributeName($method) . '</h2>';
+			$annotations[] = '<h2>' . $this->getAttributeName($method) . '</h2>' . PHP_EOL;
 			//description
 			$description = $annotationReflection->getShortDescription();
 			if (strlen($description)) {
