@@ -33,7 +33,9 @@ HEAD;
 
 				$table .= PHP_EOL
 					. '| '
+					. '<a href="#' . $this->getAttributeName($method) . '">'
 					. $this->getAttributeName($method)
+					. '</a>'
 					. ' | '
 					. $returnType
 					. ' | '

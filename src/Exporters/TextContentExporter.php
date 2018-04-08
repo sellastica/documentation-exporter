@@ -19,7 +19,7 @@ class TextContentExporter extends AbstractPageExporter implements \Sellastica\Do
 			}
 
 			//heading
-			$annotations[] = '<h2>' . $this->getAttributeName($method) . '</h2>' . PHP_EOL;
+			$annotations[] = '<h2 id="' . $this->getAttributeName($method) . '">' . $this->getAttributeName($method) . '</h2>' . PHP_EOL;
 			$annotations[] = $annotationReflection->getText();
 		}
 
